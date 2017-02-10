@@ -7,11 +7,18 @@ The repository provides a `Dockerfile` to build the [Micropython](https://microp
 Build Instructions
 ------------------
 
-Build the docker image. To specify a particular version of micropython provide it through the `build-arg`. Otherwise the HEAD of the master branch will be used.
+Build the docker image of the master branch.
 
 ```bash
-  docker build -t micropython --build-arg VERSION=v1.8.1 .
+  docker build -t micropython .
 ```
+
+To specify a particular version of micropython provide it through the `build-arg`. Otherwise the HEAD of the master branch will be used.
+
+```bash
+  docker build -t micropython --build-arg VERSION=v1.8.7 .
+```
+
 
 Once the container is built successfuly create a container from the image
 
@@ -49,15 +56,19 @@ Here `${SERIAL_PORT}` is the path to the serial device on which the board is con
 Freeze personal script files in the build
 -----------------------------------------
 
-If you want to add personal python script to the build, link them into the container (-v docker option) before building and flashing the firmware
-The directoty where to copy them is **modules** folder inside /micropython/esp8266/modules or run with a volume
+If you want to add personal python scripts to include in the build flash image, you have to add them to the folder **/micropython/esp8266/modules**.
+The building process will precompiles your scripts with **MPY** and will inserts in the flash image this option will save you more memory of the microcontroller.
+
+To obtain this within the docker container, create a copy of the original micropython folder **/micropython/esp8266/modules** in your working directrory
+add here your scripts and link them into the container (with the -v docker option) overriding the default **modules** folder, when you run the container.
+
 
 ```bash
-docker run --rm -it -v $(pwd)/modules:/micropython/esp8266/modules --device /dev/ttyUSB0 --user root --workdir /micropython/esp8266 esp /bin/bash
+docker run --rm -it -v $(pwd)/modules:/micropython/esp8266/modules --device ${SERIAL_PORT}/dev/ttyUSB0 --user root --workdir /micropython/esp8266 esp /bin/bash
 make clean
 make 
 make PORT=/dev/ttyUSB0 erase deploy
 ```
 
 
-Here `${SERIAL_PORT}` is the path to the serial device on which the board is connected.
+Here `${SERIAL_PORT}` is the path to the serial device on which the board is connected, generally /dev/ttyUSB0.
