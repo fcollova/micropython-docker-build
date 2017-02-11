@@ -50,7 +50,7 @@ I prefereably **erase** flash memory of ESP8266 before starting flash a new firm
 docker run --rm -it --device ${SERIAL_PORT} --user root --workdir /micropython/esp8266 micropython make PORT=${SERIAL_PORT} erase deploy
 ```
 
-Here `${SERIAL_PORT}` is the path to the serial device on which the board is connected.
+Here `${SERIAL_PORT}` is the path to the serial device on which the board is connected, generally is equal to /dev/ttyUSB0.
 
 
 Freeze personal script files in the build
@@ -64,11 +64,11 @@ add here your scripts and link them into the container (with the -v docker optio
 
 
 ```bash
-docker run --rm -it -v $(pwd)/modules:/micropython/esp8266/modules --device ${SERIAL_PORT}/dev/ttyUSB0 --user root --workdir /micropython/esp8266 esp /bin/bash
+docker run --rm -it -v $(pwd)/modules:/micropython/esp8266/modules --device ${SERIAL_PORT} --user root --workdir /micropython/esp8266 esp /bin/bash
 make clean
 make 
 make PORT=/dev/ttyUSB0 erase deploy
 ```
 
 
-Here `${SERIAL_PORT}` is the path to the serial device on which the board is connected, generally /dev/ttyUSB0.
+Here `${SERIAL_PORT}` is the path to the serial device on which the board is connected, generally is equal to /dev/ttyUSB0.
